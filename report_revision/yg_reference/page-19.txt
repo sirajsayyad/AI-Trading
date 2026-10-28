@@ -1,0 +1,26 @@
+[11] C. Gilbert and M. Gilbert, “Exploring secure hashing algorithms for data integrity verifi
+cation,” SSRN, 2025.
+[12] J. E. Silva, “An overview of cryptographic hash functions and their uses,” GIAC/SANS
+Institute, 2003.
+[13] A. Sadeghi-Nasab and V. Rafe, “A comprehensive review of the security flaws of hashing
+algorithms,” Journal of Computer Virology and Hacking Techniques, 2023.
+[14] D. Wang, Y. Jiang, H. Song, F. He, M. Gu, and J. Sun, “Verification of implementations of
+cryptographic hash functions,” IEEE Access, 2017.
+[15] L. Beringer, A. Petcher, K. Q. Ye, and A. W. Appel, “Verified correctness and security of
+OpenSSL HMAC,” in Proc. 24th USENIX Security Symposium, 2015.
+[16] G. Di Crescenzo and F. Vakil, “Cryptographic hashing for virus localization,” in Proc. 4th
+ACM Workshop on ..., 2006.
+[17] R. Shah, G. Waghela, Y. Soni, P. Jain, et al., “File sharing system using cryptographic hash,”
+in Proc. 3rd International Conference on ..., IEEE, 2025.
+[18] M. Almazrooie, A. Samsudin, A. A. A. Gutub, et al., “Integrity verification for digital Holy
+Quran verses using cryptographic hash function and compression,” Journal of King Saud
+University– Computer and Information Sciences, 2020.
+[19] M.R.Anwar, D.Apriani, and I. R. Adianita, “Hash algorithm in verification of certificate data
+integrity and security,” Aptisi Transactions on ..., 2021.
+[20] N. Selvam, M. M. Thariq, et al., “A secure distributed file storage framework using cryp
+tographic hashing and PoW,” Central Asian Journal of ..., 2026.
+[21] A. A. AlSabhany and M. A. AlSaadi, “UES256– Upper Euphrates Signature: A secure fragile
+watermark for blind authentication and tamper detection,” IEEE Access, 2025.
+[22] C. Huang, L. Nong, Y. Nong, Y. Lu, et al., “Detection model for network access data
+tampering attacks with blockchain technology,” Intelligent Decision Technologies, 2024.
+19

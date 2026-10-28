@@ -1,0 +1,25 @@
+enterprise infrastructure. The proposed system therefore focuses on clarity, ease of use, and
+measurable file-integrity verification rather than attempting to replace advanced enterprise security
+solutions.
+Thus, the research gap addressed by this project is the need for a practical, lightweight, and user-
+oriented file integrity testing mechanism that combines cryptographic hashing, baseline
+management, change classification, and clear reporting in a single local application. The project
+provides a foundation that can later be extended with real-time monitoring, automated alerts,
+centralized logging, and integration with advanced security-monitoring systems.
+7. Problem Statement:
+Digital files may be modified, deleted, or corrupted due to unauthorized access, malware, or
+accidental actions. Existing basic file-checking methods may not reliably detect changes in file
+content. Therefore, a simple and reliable mechanism is required to verify file integrity and identify
+unauthorized changes.
+8. Project Objectives:
+● To design and develop a lightweight File Integrity Tester for monitoring selected files and
+directories.
+● To implement cryptographic hashing and trusted baseline storage for reliable file integrity
+verification.
+● To detect and classify file changes as modified, added, deleted, or unchanged through
+comparison with the trusted baseline.
+● To generate clear, timestamped integrity reports containing details of detected changes for easy
+analysis.
+● To evaluate the effectiveness of the proposed system using controlled test cases involving file
+modification, addition, deletion, and unchanged files.
+9

@@ -1,0 +1,32 @@
+evidence of file changes. The project is interdisciplinary because it combines principles of
+cybersecurity and cryptography with operating-system concepts, software development, database
+management, and user-oriented reporting. The modular design also provides scope for future
+enhancements such as real-time file monitoring, automated alerts, centralized logging, and
+integration with broader security-monitoring systems.
+Overall, the File Integrity Tester provides a practical and educational approach to an important
+cybersecurity problem. It demonstrates how relatively simple cryptographic and file-system
+techniques can be combined to detect unauthorized changes and improve the reliability of digital
+information. The project therefore has relevance to cybersecurity education, local system
+protection, and the development of more advanced file integrity monitoring solutions.
+5. Literature Review:
+[1] Peddoju et al. (2020): Peddoju et al. (2020) [1] studied file integrity monitoring tools and
+examined their existing approaches, challenges, and limitations. The study highlighted the
+importance of monitoring sensitive files to detect unauthorized modifications and discussed
+possible improvements to existing integrity-monitoring mechanisms. This work is directly relevant
+to the present File Integrity Tester because the proposed system also focuses on detecting changes
+in files and directories using a lightweight integrity-monitoring approach.
+[2] Bridges et al. (2019): Bridges et al. (2019) [2] presented a comprehensive survey of Host-
+Based Intrusion Detection Systems (HIDS) and examined different types of host information used
+for detecting malicious activity, including logs, operating-system data, and file-system
+information. The study demonstrated the importance of host-level monitoring in cybersecurity. It
+is relevant to the present project because the File Integrity Tester acts as a lightweight host-level
+security mechanism focused specifically on file-system changes.
+[3] Liu et al. (2019): Liu et al. (2019) [3] reviewed host-based intrusion detection techniques based
+on system calls and analyzed different feature-extraction and detection approaches. Their work
+demonstrated how information generated within a host can be used to identify suspicious activities.
+Although the proposed File Integrity Tester does not analyze system calls, the study supports the
+broader concept of host-based security monitoring and provides context for file-level integrity
+detection.
+[4] AlMajali et al. (2024): AlMajali et al. (2024) [4] proposed an adaptive ransomware detection
+method based on similarity-preserving hashing. Their approach monitors changes within files to
+6

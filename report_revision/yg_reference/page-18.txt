@@ -1,0 +1,27 @@
+• References:
+[1] G. H. Kim and E. H. Spafford, “The design and implementation of Tripwire: A file system
+integrity checker,” in Proc. 2nd ACM Conf. on Computer and Communications Security, 1994,
+pp. 18–29.
+[2] S. K. Peddoju and H. Upadhyay, “File integrity monitoring tools: Issues, challenges, and
+solutions,” Concurrency and Computation: Practice and Experience, 2020.
+[3] A. Pinheiro, E. D. Canedo, R. T. de Sousa Jr., et al., “Monitoring file integrity using blockchain
+and smart contracts,” IEEE Access, 2020.
+[4] B. Al-Muntaser, M. A. Mohamed, et al., “Real-time intrusion detection of insider threats in
+industrial control system workstations through file integrity monitoring,” International Journal of
+..., 2023.
+[5] H. Jin, G. Xiang, D. Zou, F. Zhao, M. Li, and C. Yu, “A guest-transparent file integrity
+monitoring method in virtualization environment,” Computers & Mathematics with Ap plications,
+2010.
+[6] B. Shi, B. Li, L. Cui, and L. Ouyang, “Vanguard: A cache-level sensitive file integrity
+monitoring system in virtual machine environment,” IEEE Access, 2018.
+[7] G.Sivathanu, C. P. Wright, and E. Zadok, “Ensuring data integrity in storage: Techniques and
+applications,” in Proc. 2005 ACM Workshop on Storage Security and Survivability, 2005.
+[8] Z. H.Abdullah, N. I. Udzir, R. Mahmod, et al., “Towards a dynamic file integrity monitor
+through a security classification,” International Journal of New Computer Architectures and their
+Applications, 2011.
+[9] Z. H. Abdullah, N. I. Udzir, R. Mahmod, et al., “File integrity monitor scheduling based on file
+security level classification,” in Proc. International Conference on Software En gineering and
+Computer Systems, Springer, 2011.
+[10] D. Zlatkovski, A. Mileva, K. Bogatinova, and I. Ampov, “A new real-time file integrity
+monitoring system for Windows-based environments,” 2018. 23
+18

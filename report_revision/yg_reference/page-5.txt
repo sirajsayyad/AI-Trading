@@ -1,0 +1,33 @@
+i. Societal Significance:
+From a societal perspective, the project contributes to better awareness and protection of digital
+information. Individuals, educational institutions, small organizations, and other users store
+important documents and data on computers and local systems. Unauthorized modification or
+deletion of such information can result in data loss, misinformation, or disruption of services.
+The File Integrity Tester can help users identify unexpected changes to monitored files and
+improve basic awareness of file-level security. Its simple design also makes the concept of
+cryptographic integrity verification easier to understand and apply in educational and small-scale
+environments.
+ii. Industrial Significance:
+In industrial and organizational environments, file integrity is an important part of system and
+security monitoring. Configuration files, application files, scripts, logs, and other critical
+resources may be modified because of software errors, unauthorized access, malware, or
+ransomware. Detecting such changes can assist administrators in identifying potential security
+incidents. The proposed system provides a basic file integrity monitoring mechanism by creating
+a trusted baseline, recalculating file hashes during subsequent scans, and identifying modified,
+added, deleted, or unchanged files. Although the current implementation is intended for local and
+small-scale use rather than enterprise deployment, its underlying approach is applicable to
+cybersecurity operations, system administration, and security monitoring.
+iii. Academic Significance:
+Academically, the project provides practical implementation of concepts from cryptography,
+cybersecurity, operating systems, file systems, and software engineering. It demonstrates how
+cryptographic hash functions can be used to verify file integrity and how baseline information
+can be maintained for comparison. The project also provides an opportunity to study file
+metadata, change detection, database or structured-data storage, system-level file operations, and
+security reporting. It therefore connects theoretical cybersecurity concepts with an
+implementable software solution and provides a foundation for further experimentation and
+evaluation.
+iv. Innovative and Interdisciplinary Aspects:
+The project combines cryptographic hashing with file-system monitoring and automated change
+classification in a single lightweight application. Instead of relying only on file metadata such as
+size or modification time, the system uses content-based hash values to provide stronger
+5

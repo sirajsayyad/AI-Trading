@@ -1,0 +1,23 @@
+A
+Mini-Project Progress-I Report
+on
+“ Hash based File Integrity Tester using Python”
+Submitted in partial fulfillment of the requirements for the award of
+Final Year B.Tech. – Semester I
+Honors in Cyber Security
+for the Subject
+CSEHon-05B: Mini Project
+To
+Punyashlok Ahilyadevi Holkar Solapur University, Solapur
+By
+Ms. Sakshi Satish Kadam [Roll No.: 17] [Class & Div.: LY- B ]
+Ms. Yogita Yuvraj Gajare [Roll No.: 10] [Class & Div.: LY- B]
+Ms. Shweta Parmeshwar Dubal [Roll No.: 07] [Class & Div.: LY- B]
+Ms. Ankita Bhagwat Patil [Roll No.: 27] [Class & Div.: LY- B]
+Project Group No.: B4
+Under the Guidance of
+Prof. S. A. Shegdar
+DEPARTMENT OF COMPUTER SCIENCE AND ENGINEERING
+SVERI’s COLLEGE OF ENGINEERING, PANDHARPUR
+Academic Year: 2026–2027
+1

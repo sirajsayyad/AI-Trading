@@ -1,0 +1,21 @@
+Figure 5. Detection of Deleted and Added Files
+Fig 5. presents the detection of added and deleted files during integrity verification. The system
+identifies newly added files that are absent from the stored baseline and detects previously
+recorded files that are no longer available in the current scan. These results help users track
+changes in the monitored directory and maintain awareness of file-system modifications.
+iii. Experimental Test Cases
+To evaluate the current implementation, controlled test cases are performed on a set of sample
+files. First, the original files are scanned and their hash values are stored as the trusted baseline.
+The files are then subjected to different controlled operations and scanned again.
+The following test cases are considered:
+Table 1.Test Cases for Validation
+Test Case Action Performed Expected Result
+TC- 01 File remains unchanged Unchanged
+TC-02 File content is modified Modified
+TC-03 New file is added Added
+TC-04 Existing file is deleted Deleted
+TC-05 Multiple files are Correctly classify each
+changed change
+These test cases provide a controlled environment for verifying the basic functionality of the
+developed system.
+15

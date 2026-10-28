@@ -1,0 +1,28 @@
+1. Title of the Project:
+Hash based File Integrity Tester using Python
+2. Abstract:
+The File Integrity Tester is a lightweight security application designed to monitor and verify the
+integrity of files and directories against unauthorized modification, deletion, or addition.
+Maintaining file integrity is an important aspect of cybersecurity because even minor unauthorized
+changes to critical files can affect system reliability, application behavior, and data security. The
+main objective of this project is to develop a simple and efficient mechanism for detecting such
+changes using cryptographic hashing.
+The proposed system allows users to select files or directories for monitoring and generates
+cryptographic hash values using algorithms such as MD5, SHA-1, or SHA-256. These values,
+along with relevant file information such as file path, size, and modification time, are stored as a
+trusted baseline. During subsequent scans, the system recalculates the hash values of the monitored
+files and compares them with the stored baseline values. Based on the comparison, files can be
+identified as unchanged or modified, while differences in the file set can be used to detect newly
+added or deleted files. The system generates a timestamped integrity report containing the detected
+changes and their status.
+The expected outcome is a reliable and easy-to-use file integrity monitoring solution suitable for
+local Windows/Linux environments. The project demonstrates the practical application of
+cryptographic hashing in cybersecurity and provides a foundation for further enhancements such
+as real-time monitoring, automated alerts, and integration with larger security systems.
+3. Introduction:
+File integrity is an important aspect of cybersecurity that ensures digital files remain accurate,
+complete, and protected from unauthorized modification. Files may be altered intentionally by
+attackers or unintentionally due to software failures, malware, accidental deletion, or system
+errors. Unauthorized changes to configuration files, application files, databases, and other
+important resources can affect system functionality and may indicate a security breach. Therefore,
+3

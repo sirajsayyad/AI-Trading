@@ -1,0 +1,36 @@
+9. Scope of the Project:
+The File Integrity Tester focuses on monitoring and verifying the integrity of selected files and
+directories stored on a local computer system. The project covers the complete basic process of
+file integrity verification, beginning with the selection of files or directories to be monitored and
+the creation of a trusted baseline. Cryptographic hash values are generated for the selected files
+and stored along with relevant information such as file path, file size, and modification time.
+During subsequent scans, the system recalculates the hash values and compares them with the
+stored baseline to identify changes in the monitored files.
+The system is designed to detect and classify different types of file-system changes, including
+modified, added, deleted, and unchanged files. The detected results are recorded and presented
+through a clear, timestamped integrity report, allowing users to understand which files have
+changed and when the changes were detected. The project can be used for educational, testing, and
+small-scale security-monitoring purposes in desktop or laboratory environments.
+The project assumes that the initial baseline is created from trusted and uncompromised files and
+that the application has appropriate permission to access the selected files and directories. The
+scope is limited to detecting and reporting integrity changes and does not include preventing
+attacks, identifying the exact cause of a modification, removing malware, or automatically
+recovering damaged files. Enterprise-scale distributed monitoring, cloud-based deployment,
+centralized SIEM integration, and advanced real-time monitoring are outside the current scope.
+These capabilities can be considered as future enhancements to extend the system toward more
+advanced security monitoring environments.
+10. Methodology:
+The File Integrity Tester is developed as a software-based cybersecurity application for detecting
+unauthorized or unexpected changes in files and directories. The proposed system follows a
+baseline-based file integrity verification approach in which the original trusted state of selected
+files is recorded and compared with their state during subsequent scans.
+i. Experimental Setup and System Design:
+The system consists of a file selection module, scanning module, cryptographic hashing module,
+baseline storage module, comparison module, and reporting module. Initially, the user selects the
+files or directories to be monitored. The system scans the selected files and generates their
+cryptographic hash values. These hash values, along with relevant file information such as path,
+size, and modification time, are stored as the trusted baseline. During a later scan, the system
+recalculates the hash values and compares them with the stored baseline. Based on the
+comparison, files are classified as modified, added, deleted, or unchanged. The results are then
+recorded and presented in an integrity report.
+10

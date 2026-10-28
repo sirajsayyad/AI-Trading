@@ -1,0 +1,32 @@
+iv. Analysis and Results
+The analysis is based on the comparison between the trusted baseline and the state of files during
+subsequent scans. When a file is modified, even a small change in its content results in a
+different cryptographic hash value. The comparison module therefore identifies the file as
+modified. Similarly, the presence of a new file that was not included in the baseline results in an
+added-file status, while the absence of a previously recorded file results in a deleted-file status.
+The current testing demonstrates the basic ability of the prototype to distinguish between
+different file states. The results are recorded and presented in a structured form, making it easier
+to identify which files have changed. File metadata can also be used alongside hash values to
+provide additional information about the detected change.
+The following table can be used to present your actual experimental results:
+Table 2.Test Case Report of Proposed System
+Test Case Number of Files Tested Correctly Detected Incorrectly Detected Result
+Unchanged files 10 10 0 Pass
+Modified files 10 10 0 Pass
+Added files 5 4 1 Fail
+Deleted files 5 5 0 Pass
+The results can be further represented using a graph showing the number of files correctly
+classified under each test condition.
+v. Discussion
+The prototype demonstrates that cryptographic hash comparison can provide an effective method
+for identifying changes in file contents. The baseline-and-comparison approach provides a
+simple mechanism for establishing the expected state of monitored files and identifying
+deviations from that state.
+The current implementation is particularly suitable for controlled local environments and
+academic experimentation. Its main advantage is that it focuses on the core integrity-verification
+process without requiring complex enterprise security infrastructure. At the same time, the
+current prototype has limitations. It primarily detects changes after a scan is performed and does
+not determine whether a detected modification is malicious or legitimate. Real-time monitoring,
+automated notifications, centralized logging, and integration with larger security-monitoring
+platforms can be considered for future development.
+16

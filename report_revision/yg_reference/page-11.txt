@@ -1,0 +1,11 @@
+ii. Software Tools:
+The primary programming language used for the implementation is Python. Python libraries for
+cryptographic hashing, file-system operations, metadata handling, and report generation are used
+according to the implementation requirements. HTML, CSS, and JavaScript may be used for the
+user interface or web-based presentation of results. JSON or SQLite can be used for storing
+baseline information and scan results. Visual Studio Code or a similar Python development
+environment can be used for coding, debugging, and testing. Git and GitHub can be used for
+source-code management and version control.
+iii. Flow Chart:
+Figure 1. Flow Chart of Proposed System
+11

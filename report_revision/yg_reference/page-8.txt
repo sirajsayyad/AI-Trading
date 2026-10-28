@@ -1,0 +1,32 @@
+the continued use of cryptographic hashing as a fundamental security mechanism. This provides
+supporting technical context for the use of cryptographic hashes in the present project.
+[10] Kim and Spafford (1994): Kim and Spafford (1994) [10] developed Tripwire, one of the
+foundational file-system integrity monitoring systems. The system generated signatures for
+selected files and compared them with trusted previously stored values to detect unauthorized
+changes. This work established the basic baseline-comparison principle that continues to be used
+in file-integrity monitoring. The present File Integrity Tester follows this fundamental concept
+while providing a lightweight implementation for monitoring local files and directories.
+6. Research Gap:
+From the reviewed literature, it is observed that existing research has extensively explored file
+integrity monitoring, host-based intrusion detection, ransomware detection, and cryptographic
+techniques for identifying suspicious file activity. Recent studies have introduced advanced
+approaches such as real-time monitoring, behavioral analysis, kernel-level monitoring, machine
+learning, and similarity-preserving hashing. These approaches can provide strong security
+capabilities, but many of them are designed for specific threats or require comparatively complex
+monitoring mechanisms and system resources.
+A significant gap is the limited focus on simple and lightweight file integrity verification systems
+suitable for local and small-scale environments. Many advanced approaches concentrate on
+detecting ransomware or broader malicious behavior rather than providing a straightforward
+mechanism for users to verify the integrity of selected files and directories. In addition, different
+types of file changes, such as modification, addition, deletion, and unchanged status, are not always
+presented through a simple and user-oriented integrity report.
+The proposed File Integrity Tester aims to address these gaps by developing a lightweight software
+solution based on cryptographic hashing and trusted baseline comparison. The system allows
+selected files or directories to be scanned, generates cryptographic hash values, stores baseline
+information, and performs subsequent scans to identify changes. It classifies files as modified,
+added, deleted, or unchanged and presents the results through an integrity report. File metadata
+such as path, size, and modification time can also be maintained to provide additional information
+during comparison.
+Another gap addressed by the project is the need for a practical implementation that can be easily
+studied, tested, and extended in an academic or desktop environment without requiring complex
+8

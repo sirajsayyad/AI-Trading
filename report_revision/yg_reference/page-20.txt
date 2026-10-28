@@ -1,0 +1,21 @@
+[23] M. Hussan, S. A. Parah, A. Jan, and G. J. Qureshi, “Hash-based image watermarking
+technique for tamper detection and localization,” Health and Technology, 2022.
+[24] R. Ch, G.Srivastava, and R. Gadekallu, “ECDSA-based tamper detection in medical data
+using a watermarking technique,” International Journal of Cognitive ..., 2024.
+[25] R. Sharma, M. A. R. Singh, M. P. Pathak, et al., “StegoHash: A dual-layer tamper detec tion
+model using steganography and SHA-256 hashing,” Journal of International Com mercial Law
+and Technology, 2025. 24
+[26] D. Kumar, S. S. R. Yarlagadda, N. V. V. N. Sai, et al., “FileLedger: Blockchain-based system
+for file authenticity and tamper detection,” in Proc. International Conference on . . . , IEEE, 2025.
+[27] H. Nunoo-Mensah, K. O. Boateng, et al., “Tamper-aware authentication framework for
+wireless sensor networks,” IET Wireless Sensor Systems, 2017.
+[28] V. P. Bagdi, K. H. Walse, and M. Atique, “Ensuring digital image authenticity through
+innovative methods and algorithms with a blockchain-based framework for tamper de tection,” in
+Proc. International Conference on ..., IEEE, 2024.
+[29] W. Shi, Z. Wu, and J. Xi, “Research integrity education based on integrating SHA-256
+validation into biomedical signal experiments,” in Proc. 2nd International Conference on ..., ACM,
+2025.
+[30] R. S. A. Fathima, M. Sathwika, M. H. Prakash, et al., “Blockchain-powered certificate
+verification using SHA-256 algorithm,” in Proc. 7th International Conference on ..., IEEE, 2025.
+Date of Project Progress-I Report Submission: 07/08/2026
+20

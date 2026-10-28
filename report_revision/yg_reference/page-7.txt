@@ -1,0 +1,33 @@
+identify abnormal modifications caused by ransomware while attempting to reduce computational
+overhead. The research demonstrates a modern application of hashing and file-integrity monitoring
+for cybersecurity. This work is highly relevant to the present project because both systems use file
+changes and hash-based techniques to identify potentially malicious modifications.
+[5] Begovic et al. (2023): Begovic et al. (2023) [5] presented a survey of cryptographic
+ransomware detection techniques and examined approaches based on system calls, input/output
+activity, and file-system monitoring. The authors identified file-system activity as an important
+indicator for detecting ransomware behavior. This research supports the present File Integrity
+Tester because monitoring changes in protected files can provide an early indication of suspicious
+activity.
+[6] Satilmis et al. (2024): Satilmis et al. (2024) [6] conducted a systematic literature review of
+Host-Based Intrusion Detection Systems and analyzed research published between 2020 and 2023.
+The study examined different HIDS approaches, their advantages, limitations, and future research
+directions. The findings highlight the continuing importance of host-level monitoring for
+cybersecurity. This is relevant to the present project because the proposed system provides a simple
+file-level monitoring mechanism within a host environment.
+[7] Chew et al. (2024): Chew et al. (2024) [7] investigated ransomware detection using system-
+call behavior and real-time monitoring. Their research focused on identifying malicious activities
+before extensive damage could occur. Although the methodology differs from the hash-based
+approach of the present project, it demonstrates the importance of timely monitoring of file-related
+activities. Real-time monitoring can therefore be considered a possible future enhancement to the
+proposed File Integrity Tester.
+[8] Bönninghausen et al. (2024): Bönninghausen et al. (2024) [8] presented a comprehensive
+survey of intrusion-detection datasets and discussed challenges associated with outdated datasets
+and security-system evaluation. The study emphasized the importance of realistic and reliable
+evaluation methods for cybersecurity solutions. This is relevant to the present project because
+systematic testing with modified, added, deleted, and unchanged files is necessary to evaluate the
+effectiveness of the File Integrity Tester.
+[9] National Institute of Standards and Technology (2024): NIST (2024) [9] published the
+Stateless Hash-Based Digital Signature Standard (FIPS 205), demonstrating the continuing
+importance of hash-based cryptographic techniques in modern cybersecurity. Although the
+standard addresses digital signatures rather than file-integrity monitoring directly, it demonstrates
+7

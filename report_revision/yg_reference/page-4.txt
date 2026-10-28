@@ -1,0 +1,31 @@
+detecting changes to files and verifying their authenticity is an essential requirement in secure
+computing environments.
+One of the commonly used techniques for file integrity verification is cryptographic hashing. A
+cryptographic hash function converts the contents of a file into a fixed-length hash value that acts
+as a digital fingerprint. Algorithms such as MD5, SHA-1, and SHA-256 can be used to generate
+hash values, which can then be compared with previously stored trusted values. If the contents of
+a file change, its calculated hash value will normally change, allowing the modification to be
+detected. More advanced File Integrity Monitoring (FIM) solutions may also monitor file
+attributes, maintain logs, generate alerts, and integrate with centralized security platforms or
+Security Information and Event Management (SIEM) systems.
+The motivation for selecting this project is the need for a lightweight and easy-to-use solution that
+demonstrates the fundamental principles of file integrity monitoring without the complexity of
+enterprise-level security systems. The proposed File Integrity Tester focuses on local files and
+directories, allowing users to create a trusted baseline, perform subsequent scans, compare hash
+values, and identify modified, added, or deleted files. The system also generates reports to support
+analysis of detected changes.
+From an industrial perspective, file integrity monitoring is relevant in system administration,
+cybersecurity operations, application security, and compliance environments where unauthorized
+changes to critical files must be identified. From an academic and research perspective, the project
+provides practical understanding of cryptographic hashing, baseline management, file-system
+monitoring, change detection, and security reporting. Thus, the project serves as a foundation for
+developing more advanced integrity monitoring systems with features such as real-time
+monitoring, automated alerts, centralized logging, and SIEM integration.
+4. Relevance / Significance of the Project:
+The File Integrity Tester is significant in the field of cybersecurity because maintaining the
+integrity of digital files is essential for preventing unauthorized modification, accidental
+corruption, and tampering. As organizations and individuals increasingly depend on digital
+information, ensuring that important files remain unchanged and trustworthy has become an
+important security requirement. The proposed project provides a lightweight approach for
+verifying file integrity using cryptographic hashing and baseline comparison.
+4

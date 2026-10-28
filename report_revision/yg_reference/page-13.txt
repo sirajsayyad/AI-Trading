@@ -1,0 +1,21 @@
+Figure 2. System Architecture of the Proposed File Integrity Tester
+Fig 2. illustrates the system architecture of the proposed File Integrity Tester, showing the main
+components and their interactions. The system takes selected files and directories as input,
+processes them through the file-scanning and cryptographic hashing modules, and stores the
+generated hash values in a trusted baseline database. The comparison module checks the current
+hash values against the stored baseline to identify modified, added, deleted, and unchanged files.
+Finally, the reporting module presents the detected changes in a structured integrity report. The
+architecture demonstrates how the different modules work together to provide a systematic and
+lightweight file integrity verification mechanism.
+The developed design separates scanning, hashing, comparison, and reporting functions so that
+individual components can be tested independently and extended in future versions.
+ii. Prototype Development
+A working prototype has been developed using Python as the primary programming language.
+The prototype performs file-system operations, generates cryptographic hash values, stores
+baseline information, and compares the current file state with the previously recorded baseline.
+Structured data storage is used to maintain baseline and scan information.
+The prototype has been tested using controlled files and directories. Different file states are
+created intentionally to verify whether the system can distinguish between unchanged and
+changed files. The prototype output provides information about the detected file status and
+supports generation of an integrity report.
+13

@@ -1,0 +1,24 @@
+﻿import assert from 'node:assert/strict';
+import { clearDashboardCache, dashboardData } from '../src/lib/dashboard-cache.ts';
+
+let calls = 0;
+const fetcher = async () => { calls++; return { equity: 10 }; };
+const [first, duplicate] = await Promise.all([dashboardData('a:summary', fetcher), dashboardData('a:summary', fetcher)]);
+assert.deepEqual(first, duplicate);
+await dashboardData('a:summary', fetcher);
+assert.equal(calls, 1, 'reuse fresh data and deduplicate in-flight calls');
+await dashboardData('b:summary', fetcher);
+assert.equal(calls, 2, 'isolate accounts');
+await dashboardData('a:summary', fetcher, true);
+assert.equal(calls, 3, 'manual refresh bypasses cache');
+clearDashboardCache();
+await dashboardData('a:summary', fetcher);
+assert.equal(calls, 4, 'clear on logout or mutation');
+let finish;
+const old = dashboardData('old', () => new Promise(resolve => { finish = resolve; }));
+clearDashboardCache();
+finish({ equity: 999 });
+await assert.rejects(old, /Account data changed/);
+await assert.rejects(dashboardData('failed', async () => { throw new Error('offline'); }), /offline/);
+await dashboardData('failed', fetcher);
+console.log('Dashboard cache checks passed.');

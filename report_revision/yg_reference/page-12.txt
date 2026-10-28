@@ -1,0 +1,28 @@
+Fig 1. illustrates the flowchart of the proposed File Integrity Tester, showing the sequence of
+operations performed during file integrity verification. The process begins with selecting the files
+or directories to be monitored, followed by generating cryptographic hash values and storing
+them as a trusted baseline. During subsequent scans, the system recalculates the hash values and
+compares them with the stored baseline to identify modified, added, deleted, or unchanged files.
+Finally, the detected changes are recorded and presented in an integrity report. The flowchart
+provides a clear representation of the system's workflow, from file selection to final report
+generation.
+11. Work Completed Till Date:
+At the present stage, more than 50% of the File Integrity Tester has been completed. The major
+system design, file-scanning mechanism, cryptographic hashing, baseline creation, file
+comparison, change detection, and basic reporting components have been developed. The current
+prototype is capable of scanning selected files or directories and comparing their current state
+with a previously stored trusted baseline.
+i. Design / Model Developed
+The proposed File Integrity Tester follows a baseline-based integrity verification model. The
+system begins by allowing the user to select the files or directories that need to be monitored.
+During the initial scan, the system calculates a cryptographic hash value for each selected file
+and stores the hash along with relevant file information such as file path, file size, and
+modification time. This information forms the trusted baseline.
+During subsequent scans, the system again reads the selected files and calculates their current
+hash values. The comparison module compares the newly calculated values with the
+corresponding baseline values. If the hash values are identical, the file is considered unchanged.
+If the hash value differs, the file is classified as modified. Files that are present in the current
+scan but not in the baseline are identified as added, while files present in the baseline but missing
+during the current scan are identified as deleted.
+The basic system model can be represented as:
+12

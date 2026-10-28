@@ -1,0 +1,11 @@
+Figure 3. Detection of a Modified File
+Fig 3. shows the output of the File Integrity Tester when modifications are made to previously
+monitored files. The system compares the current cryptographic hash values with the stored
+baseline and identifies files whose contents have changed. The modified files are reported to help
+users recognize unexpected changes and verify the integrity of their data.
+Figure 4. Baseline Creation Output (TC01)
+Fig 4 illustrates the baseline creation process, in which the system scans the selected files and
+generates their cryptographic hash values. The calculated hashes, along with relevant file
+information, are stored as the trusted baseline for future comparisons. This baseline serves as the
+reference for identifying changes during subsequent scans.
+14

@@ -1,0 +1,23 @@
+12. Plan for Completion of Remaining Work:
+The remaining work will focus on completing the prototype, performing systematic testing,
+improving the user interface and reporting, evaluating the system, and preparing the final project
+documentation and demonstration. The tentative schedule is planned as follows:
+Table 3. Expected Work with Tentative Timeline
+Sr. Remaining Task Tentative
+No. Timeline
+1 Complete remaining implementation and integrate all modules Week 1
+2 Improve user interface and integrity report generation Week 2
+3 Perform functional testing using different file modification, Week 3
+addition, and deletion scenarios
+4 Analyze test results and evaluate system performance Week 4
+5 Fix identified errors and improve system reliability Week 5
+6 Prepare final documentation, screenshots, graphs, and results Week 6
+7 Final system demonstration, presentation, and project submission Week 7
+The planned activities may be adjusted according to the progress of implementation and testing.
+The final stage will include complete system verification, documentation, presentation
+preparation, and demonstration of the working File Integrity Tester.
+15. Expected Date of Completion of Work:
+The complete File Integrity Tester project, including final implementation, testing, performance
+evaluation, documentation, and final demonstration, is expected to be completed by 30 Sep
+2026.
+17
