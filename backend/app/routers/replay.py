@@ -35,6 +35,7 @@ async def create_replay_session(
         start_date=config.start_date,
         speed_multiplier=config.speed_multiplier,
         blind_mode=config.blind_mode,
+        stored_only=config.stored_only,
     )
 
     if "error" in result:

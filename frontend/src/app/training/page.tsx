@@ -1,54 +1,14 @@
 "use client";
 
-import { useState, useEffect } from "react";
+import { useState } from "react";
 import { api } from "@/lib/api";
+import CoachChat from "@/components/CoachChat";
+import LearningCatalog from "@/components/LearningCatalog";
 import LiveMarketTicker from "@/components/LiveMarketTicker";
 
-interface Course {
-  id: string;
-  title: string;
-  description: string;
-  difficulty: string;
-}
-
 export default function TrainingPage() {
-  const [courses, setCourses] = useState<Course[]>([]);
-  const [loading, setLoading] = useState(true);
   const [chatOpen, setChatOpen] = useState(false);
-  const [chatMessages, setChatMessages] = useState<Array<{ role: string; content: string }>>([]);
-  const [chatInput, setChatInput] = useState("");
-  const [chatLoading, setChatLoading] = useState(false);
   const [behaviorFlags, setBehaviorFlags] = useState<Array<Record<string, unknown>>>([]);
-
-  useEffect(() => {
-    const loadCourses = async () => {
-      try {
-        const data = await api.getCourses();
-        setCourses(data);
-      } catch {
-        setCourses(sampleCourses);
-      } finally {
-        setLoading(false);
-      }
-    };
-    loadCourses();
-  }, []);
-
-  const sendMessage = async () => {
-    if (!chatInput.trim()) return;
-    const msg = chatInput;
-    setChatInput("");
-    setChatMessages(prev => [...prev, { role: "user", content: msg }]);
-    setChatLoading(true);
-    try {
-      const res = await api.askCoach(msg, undefined, chatMessages);
-      setChatMessages(prev => [...prev, { role: "assistant", content: res.answer }]);
-    } catch {
-      setChatMessages(prev => [...prev, { role: "assistant", content: "Sorry, I couldn't process that. Please try again." }]);
-    } finally {
-      setChatLoading(false);
-    }
-  };
 
   const analyzeBehavior = async () => {
     try {
@@ -59,22 +19,13 @@ export default function TrainingPage() {
     }
   };
 
-  const difficultyColor = (d: string) => {
-    switch (d) {
-      case "beginner": return "#10b981";
-      case "intermediate": return "#f59e0b";
-      case "advanced": return "#ef4444";
-      default: return "#6366f1";
-    }
-  };
-
   return (
     <div>
       <div className="page-heading" style={{ display: "flex", justifyContent: "space-between", alignItems: "flex-start", marginBottom: "32px" }}>
         <div>
           <h1 style={{ fontSize: "28px", fontWeight: 700, marginBottom: "8px" }}>AI Training</h1>
           <p style={{ color: "var(--color-text-secondary)", fontSize: "15px" }}>
-            Structured courses with AI coaching and hands-on replay scenarios.
+            AI trading lessons, historical replay exercises, and strategy backtesting.
           </p>
         </div>
         <button onClick={() => setChatOpen(!chatOpen)} style={{
@@ -90,46 +41,7 @@ export default function TrainingPage() {
 
       <div className="training-layout" style={{ display: "grid", gridTemplateColumns: chatOpen ? "1fr 380px" : "1fr", gap: "20px" }}>
         <div>
-          {/* Course Catalog */}
-          <div style={{ display: "grid", gridTemplateColumns: "repeat(auto-fill, minmax(300px, 1fr))", gap: "16px", marginBottom: "32px" }}>
-            {loading ? [1, 2, 3].map((item) => (
-              <div key={item} className="card" aria-label="Loading course" style={{ minHeight: "180px" }}>
-                <div className="skeleton skeleton-short" />
-                <div className="skeleton skeleton-title" />
-                <div className="skeleton skeleton-line" />
-                <div className="skeleton skeleton-line" />
-              </div>
-            )) : (courses.length > 0 ? courses : sampleCourses).map((course, i) => (
-              <div key={course.id} className="card" style={{ cursor: "pointer" }}>
-                <div style={{ display: "flex", justifyContent: "space-between", alignItems: "flex-start", marginBottom: "12px" }}>
-                  <span style={{
-                    padding: "3px 10px", borderRadius: "6px", fontSize: "11px", fontWeight: 600,
-                    textTransform: "uppercase", letterSpacing: "0.05em",
-                    background: `${difficultyColor(course.difficulty)}15`,
-                    color: difficultyColor(course.difficulty),
-                  }}>
-                    {course.difficulty}
-                  </span>
-                  <span style={{ fontSize: "11px", color: "var(--color-text-muted)" }}>
-                    {3 - i} modules
-                  </span>
-                </div>
-                <h3 style={{ fontSize: "16px", fontWeight: 600, marginBottom: "8px" }}>{course.title}</h3>
-                <p style={{ fontSize: "13px", color: "var(--color-text-secondary)", lineHeight: 1.6, marginBottom: "16px" }}>
-                  {course.description}
-                </p>
-                <div style={{
-                  display: "flex", justifyContent: "space-between", alignItems: "center",
-                  padding: "8px 0", borderTop: "1px solid var(--color-border)",
-                }}>
-                  <div style={{ height: "4px", flex: 1, borderRadius: "2px", background: "var(--color-bg-secondary)", marginRight: "12px" }}>
-                    <div style={{ height: "100%", borderRadius: "2px", background: "var(--gradient-primary)", width: "0%" }} />
-                  </div>
-                  <span style={{ fontSize: "11px", color: "var(--color-text-muted)" }}>0%</span>
-                </div>
-              </div>
-            ))}
-          </div>
+          <LearningCatalog />
 
           {/* Behavioral Analytics */}
           <div style={{ marginBottom: "20px" }}>
@@ -179,88 +91,13 @@ export default function TrainingPage() {
           </div>
         </div>
 
-        {/* AI Coach Chat Panel */}
-        {chatOpen && (
-          <div className="card" style={{
-            padding: 0, display: "flex", flexDirection: "column", height: "calc(100vh - 140px)",
-            position: "sticky", top: "80px", overflow: "hidden",
-          }}>
-            <div style={{
-              padding: "16px", borderBottom: "1px solid var(--color-border)",
-              display: "flex", alignItems: "center", gap: "10px",
-            }}>
-              <div style={{
-                width: "32px", height: "32px", borderRadius: "8px", background: "var(--gradient-primary)",
-                display: "flex", alignItems: "center", justifyContent: "center", fontSize: "16px",
-              }}>🤖</div>
-              <div>
-                <div style={{ fontSize: "14px", fontWeight: 600 }}>AI Trading Coach</div>
-                <div style={{ fontSize: "11px", color: "var(--color-text-muted)" }}>Ask anything about trading</div>
-              </div>
-            </div>
-
-            <div style={{ flex: 1, overflow: "auto", padding: "16px", display: "flex", flexDirection: "column", gap: "12px" }}>
-              {chatMessages.length === 0 && (
-                <div style={{ textAlign: "center", padding: "32px 16px", color: "var(--color-text-muted)", fontSize: "13px" }}>
-                  Ask the AI coach about trading strategies, risk management, or get feedback on your trades.
-                </div>
-              )}
-              {chatMessages.map((msg, i) => (
-                <div key={i} style={{
-                  alignSelf: msg.role === "user" ? "flex-end" : "flex-start",
-                  maxWidth: "85%", padding: "10px 14px", borderRadius: "12px",
-                  background: msg.role === "user" ? "var(--color-accent-primary)" : "var(--color-bg-secondary)",
-                  color: msg.role === "user" ? "white" : "var(--color-text-primary)",
-                  fontSize: "13px", lineHeight: 1.6,
-                }}>
-                  {msg.content}
-                </div>
-              ))}
-              {chatLoading && (
-                <div style={{
-                  alignSelf: "flex-start", padding: "10px 14px", borderRadius: "12px",
-                  background: "var(--color-bg-secondary)", fontSize: "13px", color: "var(--color-text-muted)",
-                }}>
-                  Thinking...
-                </div>
-              )}
-            </div>
-
-            <div style={{
-              padding: "12px", borderTop: "1px solid var(--color-border)",
-              display: "flex", gap: "8px",
-            }}>
-              <input
-                value={chatInput}
-                onChange={e => setChatInput(e.target.value)}
-                onKeyDown={e => e.key === "Enter" && sendMessage()}
-                placeholder="Ask the coach..."
-                style={{
-                  flex: 1, padding: "10px 14px", borderRadius: "10px", border: "1px solid var(--color-border)",
-                  background: "var(--color-bg-secondary)", color: "var(--color-text-primary)",
-                  fontSize: "13px", outline: "none",
-                }}
-              />
-              <button onClick={sendMessage} disabled={chatLoading} style={{
-                padding: "10px 16px", borderRadius: "10px", border: "none",
-                background: "var(--gradient-primary)", color: "white", fontWeight: 600,
-                cursor: "pointer", fontSize: "14px",
-              }}>↑</button>
-            </div>
-          </div>
-        )}
+        {chatOpen && <aside style={{ minWidth: 0 }}><CoachChat /></aside>}
       </div>
     </div>
   );
 }
 
 // ─── Sample Data ───
-const sampleCourses: Course[] = [
-  { id: "1", title: "Understanding Stop Losses", description: "Learn how to protect your capital with proper stop loss placement. Covers fixed, trailing, and volatility-based stops with live practice scenarios.", difficulty: "beginner" },
-  { id: "2", title: "Risk-Reward Mastery", description: "Master the art of favorable risk-reward setups. Learn to identify high-probability entries with optimal reward-to-risk ratios.", difficulty: "intermediate" },
-  { id: "3", title: "Advanced Position Sizing", description: "Kelly criterion, fixed fractional, and volatility-adjusted position sizing strategies for consistent portfolio growth.", difficulty: "advanced" },
-];
-
 const sampleTrades = [
   { symbol: "AAPL", side: "long", entry_price: 150, exit_price: 148, quantity: 100, entry_time: "2024-01-01T10:00:00Z", exit_time: "2024-01-01T14:00:00Z", pnl: -200, duration_hours: 4 },
   { symbol: "AAPL", side: "long", entry_price: 147, exit_price: 144, quantity: 200, entry_time: "2024-01-01T14:30:00Z", exit_time: "2024-01-01T16:00:00Z", pnl: -600, duration_hours: 1.5 },

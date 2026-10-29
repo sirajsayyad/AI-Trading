@@ -16,6 +16,7 @@ class BacktestConfig(BaseModel):
     end_date: str = Field(..., description="ISO format date string")
     initial_capital: float = Field(default=100000.0, gt=0)
     strategy_params: dict = Field(default_factory=dict)
+    stored_only: bool = False
     slippage_bps: float = Field(default=5.0, ge=0, le=100)
     commission_flat: float = Field(default=1.0, ge=0)
     commission_pct: float = Field(default=0.001, ge=0, le=0.1)

@@ -9,9 +9,8 @@ from sqlalchemy import select
 from sqlalchemy.ext.asyncio import AsyncSession
 
 from app.core.database import get_db
-from app.services.coach_service import get_trade_critique, ask_coach
+from app.services.coach_service import get_trade_critique, ask_coach, limit_requests
 from app.services.behavioral_analytics import analyze_behavior
-from app.models.curriculum import Course, Module, Lesson
 from app.models.trading import CoachReview, JournalEntry, PaperFill, RiskViolation
 from app.routers.auth import get_current_user
 from app.core.config import get_settings
@@ -22,26 +21,27 @@ router = APIRouter(tags=["AI Coach & Training"])
 # ─── Schemas ─────────────────────────────────────────────
 
 class CritiqueRequest(BaseModel):
-    trades: list[dict] = Field(default_factory=list)
+    trades: list[dict] = Field(default_factory=list, max_length=100)
     session_summary: Optional[dict] = None
-    context: str = ""
+    context: str = Field("", max_length=12000)
 
 
 class AskRequest(BaseModel):
-    question: str = Field(..., min_length=1)
-    trade_context: Optional[list[dict]] = None
-    conversation_history: Optional[list[dict]] = None
+    question: str = Field(..., min_length=1, max_length=4000)
+    trade_context: Optional[list[dict]] = Field(None, max_length=50)
+    conversation_history: Optional[list[dict]] = Field(None, max_length=10)
 
 
 class BehaviorRequest(BaseModel):
-    trades: list[dict] = Field(default_factory=list)
+    trades: list[dict] = Field(default_factory=list, max_length=100)
     account_size: float = 100000.0
 
 
 # ─── Coach Endpoints ─────────────────────────────────────
 
 @router.post("/coach/critique")
-async def critique_trades(req: CritiqueRequest):
+async def critique_trades(req: CritiqueRequest, user: dict = Depends(get_current_user)):
+    limit_requests(user["id"])
     """Get AI coaching feedback on trades."""
     feedback = await get_trade_critique(
         trades=req.trades,
@@ -52,7 +52,8 @@ async def critique_trades(req: CritiqueRequest):
 
 
 @router.post("/coach/ask")
-async def ask_question(req: AskRequest):
+async def ask_question(req: AskRequest, user: dict = Depends(get_current_user)):
+    limit_requests(user["id"])
     """Ask the AI coach a free-form question."""
     answer = await ask_coach(
         question=req.question,
@@ -76,6 +77,7 @@ async def review_my_trades(
 ):
     """Coach from the authenticated user's real paper-trade evidence."""
     user_id = current_user["id"]
+    limit_requests(user_id)
     fills = (await db.scalars(
         select(PaperFill).where(PaperFill.user_id == user_id).order_by(PaperFill.timestamp.desc()).limit(50)
     )).all()
@@ -98,7 +100,7 @@ async def review_my_trades(
     settings = get_settings()
     review = CoachReview(
         user_id=user_id,
-        model="claude-sonnet-4-6" if settings.anthropic_api_key else "offline",
+        model=settings.ollama_model,
         input_references=[fill.order_id for fill in fills],
         response=feedback,
     )
@@ -109,95 +111,3 @@ async def review_my_trades(
 
 
 # ─── Curriculum Endpoints ────────────────────────────────
-
-@router.get("/courses")
-async def list_courses(db: AsyncSession = Depends(get_db)):
-    """List all published courses."""
-    stmt = (
-        select(Course)
-        .where(Course.is_published == True)
-        .order_by(Course.order_index)
-    )
-    result = await db.execute(stmt)
-    courses = result.scalars().all()
-
-    return [
-        {
-            "id": c.id,
-            "title": c.title,
-            "description": c.description,
-            "difficulty": c.difficulty,
-        }
-        for c in courses
-    ]
-
-
-@router.get("/courses/{course_id}")
-async def get_course(course_id: str, db: AsyncSession = Depends(get_db)):
-    """Get course details with modules and lessons."""
-    # Get course
-    stmt = select(Course).where(Course.id == course_id)
-    result = await db.execute(stmt)
-    course = result.scalar_one_or_none()
-    if not course:
-        raise HTTPException(status_code=404, detail="Course not found")
-
-    # Get modules
-    stmt = select(Module).where(Module.course_id == course_id).order_by(Module.order_index)
-    result = await db.execute(stmt)
-    modules = result.scalars().all()
-
-    # Get lessons for each module
-    module_data = []
-    for mod in modules:
-        stmt = select(Lesson).where(Lesson.module_id == mod.id).order_by(Lesson.order_index)
-        result = await db.execute(stmt)
-        lessons = result.scalars().all()
-
-        module_data.append({
-            "id": mod.id,
-            "title": mod.title,
-            "description": mod.description,
-            "lessons": [
-                {
-                    "id": l.id,
-                    "title": l.title,
-                    "has_replay": l.replay_symbol is not None,
-                }
-                for l in lessons
-            ],
-        })
-
-    return {
-        "id": course.id,
-        "title": course.title,
-        "description": course.description,
-        "difficulty": course.difficulty,
-        "modules": module_data,
-    }
-
-
-@router.get("/lessons/{lesson_id}")
-async def get_lesson(lesson_id: str, db: AsyncSession = Depends(get_db)):
-    """Get lesson content with optional replay scenario."""
-    stmt = select(Lesson).where(Lesson.id == lesson_id)
-    result = await db.execute(stmt)
-    lesson = result.scalar_one_or_none()
-    if not lesson:
-        raise HTTPException(status_code=404, detail="Lesson not found")
-
-    response = {
-        "id": lesson.id,
-        "title": lesson.title,
-        "content_markdown": lesson.content_markdown,
-    }
-
-    if lesson.replay_symbol:
-        response["replay_scenario"] = {
-            "symbol": lesson.replay_symbol,
-            "timeframe": lesson.replay_timeframe,
-            "start_date": lesson.replay_start_date,
-            "blind_mode": lesson.replay_blind_mode,
-        }
-
-    return response

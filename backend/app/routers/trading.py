@@ -164,6 +164,7 @@ async def submit_paper_order(payload: OrderInput, user: dict = Depends(get_curre
         if not position:
             position = PaperPosition(user_id=user["id"], portfolio_id=portfolio.id, symbol=payload.symbol.upper())
             db.add(position)
+            await db.flush()  # Initialize mapped defaults before the first position calculation.
         total_cost = position.avg_entry_price * position.quantity + fill_price * payload.quantity
         position.quantity += payload.quantity
         position.avg_entry_price = total_cost / position.quantity

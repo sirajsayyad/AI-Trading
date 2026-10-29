@@ -38,7 +38,11 @@ class Settings(BaseSettings):
     cors_origins: str = "http://localhost:3000,http://127.0.0.1:3000"
 
     # ─── AI / LLM ───────────────────────────────────────
-    anthropic_api_key: str = ""
+    ollama_base_url: str = "http://127.0.0.1:11434"
+    ollama_auto_start: bool = False
+    ollama_model: str = "qwen3:4b-thinking"
+    ollama_timeout_seconds: int = 180
+    coach_requests_per_minute: int = 6
     market_data_provider: str = "twelve_data"
     twelve_data_api_key: str = ""
     alpaca_api_key: str = ""

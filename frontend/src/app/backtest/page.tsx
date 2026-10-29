@@ -1,6 +1,9 @@
 "use client";
 
-import { useState } from "react";
+import { Suspense, useState } from "react";
+import { useSearchParams } from "next/navigation";
+import TrainingExerciseBanner from "@/components/TrainingExerciseBanner";
+import CoachChat, { SimulationContext } from "@/components/CoachChat";
 import { api } from "@/lib/api";
 
 interface BacktestResults {
@@ -28,15 +31,26 @@ interface BacktestResults {
 }
 
 export default function BacktestPage() {
-  const [symbol, setSymbol] = useState("AAPL");
+  return <Suspense fallback={<p>Loading practice workspace…</p>}><BacktestWorkspace /></Suspense>;
+}
+
+function BacktestWorkspace() {
+  const exercise = useSearchParams();
+  const [symbol, setSymbol] = useState(() => /^[A-Z0-9.^-]{1,20}$/.test(exercise.get("symbol") || "") ? exercise.get("symbol")! : "AAPL");
   const [strategy, setStrategy] = useState("sma_crossover");
-  const [timeframe, setTimeframe] = useState("1D");
-  const [startDate, setStartDate] = useState("2023-01-01");
-  const [endDate, setEndDate] = useState("2024-01-01");
+  const [timeframe, setTimeframe] = useState(() => ["1m", "5m", "15m", "1h", "4h", "1D", "1W"].includes(exercise.get("timeframe") || "") ? exercise.get("timeframe")! : "1D");
+  const [startDate, setStartDate] = useState(() => /^\d{4}-\d{2}-\d{2}$/.test(exercise.get("start") || "") ? exercise.get("start")! : "2023-01-01");
+  const [endDate, setEndDate] = useState(() => /^\d{4}-\d{2}-\d{2}$/.test(exercise.get("end") || "") ? exercise.get("end")! : "2024-01-01");
   const [capital, setCapital] = useState(100000);
   const [shortPeriod, setShortPeriod] = useState(10);
   const [longPeriod, setLongPeriod] = useState(30);
+  const [quantity, setQuantity] = useState(100);
+  const [stopLoss, setStopLoss] = useState(0);
+  const [takeProfit, setTakeProfit] = useState(0);
+  const [versions, setVersions] = useState<{ label: string; result: BacktestResults }[]>([]);
   const [results, setResults] = useState<BacktestResults | null>(null);
+  const [coachSimulation, setCoachSimulation] = useState<SimulationContext>();
+  const [coachRunId, setCoachRunId] = useState("");
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState("");
   const [activeTab, setActiveTab] = useState<"results" | "trades" | "montecarlo">("results");
@@ -51,10 +65,15 @@ export default function BacktestPage() {
       const res = await api.runBacktest({
         symbol, strategy_name: strategy, timeframe,
         start_date: startDate, end_date: endDate,
-        initial_capital: capital,
-        strategy_params: { short_period: shortPeriod, long_period: longPeriod, quantity: 100 },
-      }) as { results: BacktestResults };
+        initial_capital: capital, stored_only: exercise.has("lesson"),
+        strategy_params: { short_period: shortPeriod, long_period: longPeriod, quantity, stop_loss_pct: stopLoss, take_profit_pct: takeProfit },
+      }) as { id: string; results: BacktestResults };
       setResults(res.results);
+      setCoachRunId(res.id);
+      setCoachSimulation({ kind: "backtest", symbol,
+        metrics: { total_return_fraction: res.results.total_return_pct, win_rate_fraction: res.results.win_rate, profit_factor: res.results.profit_factor, max_drawdown_fraction: res.results.max_drawdown_pct, total_trades: res.results.total_trades },
+        configuration: { strategy, timeframe, start_date: startDate, end_date: endDate, initial_capital: capital, short_period: shortPeriod, long_period: longPeriod, quantity, stop_loss_pct: stopLoss, take_profit_pct: takeProfit } });
+      setVersions(prev => [...prev, { label: `${symbol} ${timeframe} ${startDate}–${endDate} · ${shortPeriod}/${longPeriod} · ${quantity} shares · SL ${stopLoss}% / TP ${takeProfit}%`, result: res.results }].slice(-5));
       setActiveTab("results");
     } catch (e: unknown) {
       setError(e instanceof Error ? e.message : "Backtest failed");
@@ -70,7 +89,7 @@ export default function BacktestPage() {
         symbol, strategy_name: strategy, timeframe,
         start_date: startDate, end_date: endDate,
         initial_capital: capital,
-        strategy_params: { short_period: shortPeriod, long_period: longPeriod, quantity: 100 },
+        strategy_params: { short_period: shortPeriod, long_period: longPeriod, quantity, stop_loss_pct: stopLoss, take_profit_pct: takeProfit },
         simulations: 1000,
       });
       setMonteCarloData(res as Record<string, unknown>);
@@ -99,7 +118,7 @@ export default function BacktestPage() {
   return (
     <div>
       <div style={{ marginBottom: "32px" }}>
-        <h1 style={{ fontSize: "28px", fontWeight: 700, marginBottom: "8px" }}>Strategy Backtesting</h1>
+      <TrainingExerciseBanner /><h1 style={{ fontSize: "28px", fontWeight: 700, marginBottom: "8px" }}>Strategy Backtesting</h1>
         <p style={{ color: "var(--color-text-secondary)", fontSize: "15px" }}>
           Configure and run event-driven backtests with walk-forward analysis and Monte Carlo simulation.
         </p>
@@ -172,6 +191,11 @@ export default function BacktestPage() {
             </div>
           </div>
 
+          <div style={{ marginBottom: 16 }}>{[
+            { label: "Position size (shares)", value: quantity, set: setQuantity, min: 0.01, max: 1000000 },
+            { label: "Close-based stop loss (%) · 0 disables", value: stopLoss, set: setStopLoss, min: 0, max: 99 },
+            { label: "Close-based take profit (%) · 0 disables", value: takeProfit, set: setTakeProfit, min: 0, max: 99 },
+          ].map(field => <label key={field.label} style={{ ...labelStyle, display: "block", marginBottom: 10 }}>{field.label}<input type="number" min={field.min} max={field.max} step="0.01" value={field.value} onChange={e => field.set(Number(e.target.value))} style={inputStyle} /></label>)}<p style={{ fontSize: 12, color: "var(--color-text-secondary)" }}>Stops and targets are checked at bar close; exits fill at the next open with simulated costs. These are not intrabar protective orders.</p></div>
           {/* Run Button */}
           <button onClick={runBacktest} disabled={loading} style={{
             width: "100%", padding: "12px", borderRadius: "10px", border: "none",
@@ -182,7 +206,7 @@ export default function BacktestPage() {
             {loading ? "⏳ Running Backtest..." : "▶ Run Backtest"}
           </button>
 
-          {results && (
+          {results && !exercise.has("lesson") && (
             <button onClick={runMonteCarlo} disabled={mcLoading} style={{
               width: "100%", padding: "10px", borderRadius: "10px", border: "1px solid var(--color-border)",
               background: "transparent", color: "var(--color-text-secondary)", fontWeight: 500,
@@ -202,8 +226,10 @@ export default function BacktestPage() {
           )}
         </div>
 
-        {/* ─── Results Panel ─── */}
+        {/* Results Panel */}
         <div>
+          {versions.length > 0 && <section className="card" style={{ marginBottom: 20, overflowX: "auto" }}><h2>Strategy version comparison</h2><p style={{ color: "var(--color-text-secondary)", fontSize: 12 }}>Last five runs in this workspace. Values come from the backtesting engine; compare identical datasets and dates. Historical results do not guarantee future performance.</p><table style={{ width: "100%", fontSize: 12, marginTop: 14 }}><thead><tr>{["Version", "Return %", "Win rate %", "Profit factor", "Max drawdown %", "Trades"].map(h => <th key={h} style={{ padding: 8, textAlign: "left" }}>{h}</th>)}</tr></thead><tbody>{versions.map((v, i) => <tr key={i}><td style={{ padding: 8 }}>{i + 1}. {v.label}</td>{[v.result.total_return_pct * 100, v.result.win_rate * 100, v.result.profit_factor, v.result.max_drawdown_pct * 100, v.result.total_trades].map((value, j) => <td key={j} style={{ padding: 8 }}>{Number.isFinite(value) ? value.toFixed(2) : "—"}</td>)}</tr>)}</tbody></table></section>}
+          {results && coachSimulation && <details className="card" style={{ marginBottom: 20 }}><summary style={{ cursor: "pointer", color: "#c4b5fd", minHeight: 44 }}>AI Coach · explain this backtest</summary><CoachChat key={coachRunId} simulationContext={coachSimulation} /></details>}
           {loading && (
             <div className="card" style={{ textAlign: "center", padding: "60px" }}>
               <div style={{ fontSize: "40px", marginBottom: "12px" }} className="animate-float">📊</div>
@@ -230,7 +256,7 @@ export default function BacktestPage() {
               <div style={{ display: "flex", gap: "4px", marginBottom: "20px", padding: "4px",
                 borderRadius: "12px", background: "var(--color-bg-card)", border: "1px solid var(--color-border)",
                 width: "fit-content" }}>
-                {(["results", "trades", "montecarlo"] as const).map(tab => (
+                {(["results", "trades", "montecarlo"] as const).filter(tab => !exercise.has("lesson") || tab !== "montecarlo").map(tab => (
                   <button key={tab} onClick={() => setActiveTab(tab)} style={{
                     padding: "8px 20px", borderRadius: "8px", border: "none", fontSize: "13px", fontWeight: 500,
                     cursor: "pointer", transition: "all var(--transition-fast)",

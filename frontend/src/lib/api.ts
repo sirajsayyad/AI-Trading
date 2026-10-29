@@ -4,54 +4,76 @@
 
 import { clearDashboardCache } from "./dashboard-cache";
 
-const API_BASE = process.env.NEXT_PUBLIC_API_URL || "http://127.0.0.1:8000";
+const API_BASE = process.env.NEXT_PUBLIC_API_URL || "/api";
+
+let refreshInFlight: Promise<boolean> | null = null;
+async function refreshAccessToken(): Promise<boolean> {
+  if (!refreshInFlight) {
+    refreshInFlight = (async () => {
+      const previous = localStorage.getItem("refresh_token");
+      if (!previous) return false;
+      const response = await fetch(`${API_BASE}/auth/refresh`, {
+        method: "POST", headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ refresh_token: previous }), signal: AbortSignal.timeout(10000),
+      });
+      if (!response.ok) return false;
+      const tokens = await response.json();
+      // Do not revive a session that was logged out or replaced while refreshing.
+      if (localStorage.getItem("refresh_token") !== previous) return !!localStorage.getItem("access_token");
+      if (typeof tokens.access_token !== "string" || typeof tokens.refresh_token !== "string") return false;
+      localStorage.setItem("access_token", tokens.access_token);
+      localStorage.setItem("refresh_token", tokens.refresh_token);
+      return true;
+    })().finally(() => { refreshInFlight = null; });
+  }
+  return refreshInFlight;
+}
 
 interface RequestOptions {
   method?: string;
   body?: unknown;
   headers?: Record<string, string>;
+  signal?: AbortSignal;
+  timeoutMs?: number;
 }
 
-async function request<T>(endpoint: string, options: RequestOptions = {}): Promise<T> {
+export async function request<T>(endpoint: string, options: RequestOptions = {}): Promise<T> {
   const { method = "GET", body, headers = {} } = options;
 
+  const isForm = typeof FormData !== "undefined" && body instanceof FormData;
+  const payload = isForm ? body : body ? JSON.stringify(body) : undefined;
+  const contentHeaders: Record<string, string> = isForm ? {} : { "Content-Type": "application/json" };
+  const timeoutMs = options.timeoutMs ?? (endpoint.startsWith("/coach/") || endpoint.startsWith("/ai-coach/chat") || endpoint.endsWith("/coach") ? 210000 : 10000);
+  const timeoutSignal = AbortSignal.timeout(timeoutMs);
+  const requestSignal = options.signal ? AbortSignal.any([options.signal, timeoutSignal]) : timeoutSignal;
   const token = typeof window !== "undefined" ? localStorage.getItem("access_token") : null;
 
   let res = await fetch(`${API_BASE}${endpoint}`, {
     method,
     headers: {
-      "Content-Type": "application/json",
+      ...contentHeaders,
       ...(token ? { Authorization: `Bearer ${token}` } : {}),
       ...headers,
     },
-    signal: AbortSignal.timeout(10000),
-    body: body ? JSON.stringify(body) : undefined,
+    signal: requestSignal,
+    body: payload,
   });
 
   if (res.status === 401 && endpoint !== "/auth/login" && typeof window !== "undefined") {
-    const refreshToken = localStorage.getItem("refresh_token");
-    if (refreshToken) {
-      const refreshed = await fetch(`${API_BASE}/auth/refresh`, {
-        method: "POST", headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({ refresh_token: refreshToken }),
+    const current = localStorage.getItem("access_token");
+    const refreshed = current && current !== token ? true : await refreshAccessToken();
+    const nextToken = localStorage.getItem("access_token");
+    if (refreshed && nextToken) {
+      res = await fetch(`${API_BASE}${endpoint}`, {
+        method, headers: { ...contentHeaders, Authorization: `Bearer ${nextToken}`, ...headers },
+        signal: requestSignal, body: payload,
       });
-      if (refreshed.ok) {
-        const tokens = await refreshed.json();
-        localStorage.setItem("access_token", tokens.access_token);
-        localStorage.setItem("refresh_token", tokens.refresh_token);
-        res = await fetch(`${API_BASE}${endpoint}`, {
-          method,
-          headers: { "Content-Type": "application/json", Authorization: `Bearer ${tokens.access_token}`, ...headers },
-          signal: AbortSignal.timeout(10000),
-          body: body ? JSON.stringify(body) : undefined,
-        });
-      }
     }
   }
 
   if (!res.ok) {
     const error = await res.json().catch(() => ({ detail: res.statusText }));
-    throw new Error(error.detail || "API request failed");
+    throw new Error(typeof error.detail === "string" ? error.detail : "The request was invalid. Check your message and try again.");
   }
 
   if (method !== "GET" && (endpoint === "/paper/orders" || endpoint === "/risk/profile")) clearDashboardCache();
@@ -88,7 +110,7 @@ export const api = {
   },
 
   getLiveCandles: (symbol: string, timeframe = "1D", limit = 100) =>
-    request<Array<{ symbol: string; timestamp: string; open: number; high: number; low: number; close: number; volume: number; timeframe: string }>>(
+    request<Array<{ symbol: string; timestamp: string; open: number; high: number; low: number; close: number; volume: number; timeframe: string; provider?: string; is_delayed?: boolean }>>(
       `/data/${encodeURIComponent(symbol)}/live-candles?timeframe=${timeframe}&limit=${limit}`
     ),
 
@@ -108,6 +130,7 @@ export const api = {
     end_date: string;
     initial_capital: number;
     strategy_params: Record<string, unknown>;
+    stored_only?: boolean;
   }) => request("/backtest/run", { method: "POST", body: config }),
 
   getBacktest: (id: string) => request(`/backtest/${id}`),
@@ -125,6 +148,7 @@ export const api = {
     start_date: string;
     speed_multiplier: number;
     blind_mode: boolean;
+    stored_only?: boolean;
   }) => request("/replay/session", { method: "POST", body: config }),
 
   controlReplay: (sessionId: string, action: string, value?: string) =>
@@ -209,10 +233,15 @@ export type DashboardRange = "7D" | "30D" | "All";
 export type DashboardHistory = { points: Array<{ timestamp: string; equity: number; drawdown: number }>; observation_count: number; max_drawdown: number | null };
 
 export function getWsUrl(sessionId: string): string {
-  const base = API_BASE.replace("http", "ws");
-  return `${base}/replay/${sessionId}/stream`;
+  return getSocketUrl(`/replay/${sessionId}/stream`);
 }
 
 export function getMarketWsUrl(symbol: string): string {
-  return `${API_BASE.replace("http", "ws")}/data/stream/${encodeURIComponent(symbol)}`;
+  return getSocketUrl(`/data/stream/${encodeURIComponent(symbol)}`);
+}
+
+function getSocketUrl(path: string): string {
+  const url = new URL(`${API_BASE}${path}`, window.location.origin);
+  url.protocol = url.protocol === "https:" ? "wss:" : "ws:";
+  return url.toString();
 }

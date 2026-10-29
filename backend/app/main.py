@@ -9,7 +9,8 @@ from fastapi.middleware.cors import CORSMiddleware
 
 from app.core.config import get_settings
 from app.core.db_init import init_db
-from app.routers import auth, backtest, coach, dashboard, data, health, replay, risk, trading
+from app.services.local_model import ensure_local_model_server
+from app.routers import ai_coach, curriculum, auth, backtest, coach, dashboard, data, health, replay, risk, trading
 
 settings = get_settings()
 
@@ -23,6 +24,7 @@ async def lifespan(app: FastAPI):
         await init_db()
     except Exception as e:
         print(f"[ERROR] Failed to initialize database: {e}")
+    await ensure_local_model_server()
     yield
     # ── Shutdown ─────────────────────────────────────────
     print(f"[STOP] Shutting down {settings.app_name}")
@@ -54,6 +56,8 @@ def create_app() -> FastAPI:
     app.include_router(backtest.router)
     app.include_router(replay.router)
     app.include_router(coach.router)
+    app.include_router(ai_coach.router)
+    app.include_router(curriculum.router)
     app.include_router(auth.router)
     app.include_router(dashboard.router)
     app.include_router(risk.router)

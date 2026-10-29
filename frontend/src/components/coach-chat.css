@@ -1,0 +1,31 @@
+.coach-chat { margin-top: 20px; min-width: 0; display: flex; flex-direction: column; border-color: rgba(139,92,246,.4); }
+.coach-chat header { display: flex; flex-wrap: wrap; justify-content: space-between; gap: 8px; margin-bottom: 16px; }
+.coach-chat h2 { font-size: 21px; font-weight: 700; margin: 0; }
+.coach-chat p { color: var(--color-text-secondary); line-height: 1.7; margin: 8px 0; }
+.coach-tag { font-size: 11px; color: #a5f3fc; align-self: start; }
+.coach-chat button { cursor: pointer; min-height: 40px; padding: 8px 12px; border: 1px solid var(--color-border); border-radius: 8px; background: var(--color-bg-secondary); color: var(--color-text-primary); }
+.coach-chat button:disabled { opacity: .5; cursor: default; }
+.coach-chat label { color: var(--color-text-secondary); font-size: 13px; }
+.coach-chat select, .coach-chat textarea { display: block; width: 100%; min-width: 0; min-height: 44px; padding: 12px; border-radius: 9px; border: 1px solid var(--color-border); color: var(--color-text-primary); background: var(--color-bg-secondary); margin-top: 6px; font: inherit; }
+.coach-chat textarea { resize: vertical; }
+.coach-toolbar { display: flex; gap: 8px; flex-wrap: wrap; margin: 10px 0; }
+.coach-log { max-height: 480px; min-height: 180px; overflow-y: auto; overscroll-behavior: contain; padding: 4px; }
+.coach-message { margin: 12px 0; padding: 14px; border-radius: 12px; border: 1px solid var(--color-border); background: var(--color-bg-secondary); overflow-wrap: anywhere; }
+.coach-message.user { margin-left: 20px; background: #062d34; border-color: #075b65; }
+.coach-message.assistant { margin-right: 12px; }
+.coach-message > strong { font-size: 12px; color: #a5f3fc; }
+.coach-markdown { line-height: 1.75; font-size: 14px; }
+.coach-markdown ul, .coach-markdown ol { padding-left: 22px; list-style: revert; }
+.coach-markdown pre { padding: 12px; overflow-x: auto; background: #060f1a; border-radius: 8px; white-space: pre; }
+.coach-markdown code { font-family: var(--font-mono); font-size: 12px; }
+.coach-markdown h1, .coach-markdown h2, .coach-markdown h3 { font-size: 17px; margin: 16px 0 8px; font-weight: 600; }
+.coach-markdown a { color: #67e8f9; text-decoration: underline; }
+.coach-chat .coach-copy { font-size: 12px; color: var(--color-text-secondary); margin-top: 8px; }
+.coach-suggestions { display: grid; gap: 8px; margin-top: 16px; }
+.coach-suggestions button { text-align: left; font-size: 13px; color: #b1dcdf; }
+.coach-chat .coach-send { background: var(--gradient-primary); color: white; border: 0; min-width: 90px; }
+.coach-send-row { display: flex; justify-content: space-between; gap: 12px; align-items: center; margin-top: 10px; font-size: 11px; color: var(--color-text-muted); }
+.coach-error { background: #341a25; color: #fecdd3; padding: 12px; border: 1px solid #804052; border-radius: 8px; margin-top: 12px; }
+.coach-notice { min-height: 18px; font-size: 12px; }
+.coach-chat .coach-disclaimer { font-size: 11px; margin-top: 16px; }
+.coach-chat :focus-visible { outline: 2px solid #22d3ee; outline-offset: 3px; }

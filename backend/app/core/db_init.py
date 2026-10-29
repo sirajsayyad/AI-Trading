@@ -14,6 +14,8 @@ from app.models.candle import Candle
 from app.models.backtest import BacktestRun
 from app.models.replay import ReplaySession, ReplayOrder
 from app.models.curriculum import Course, Module, Lesson
+from app.models import ai_chat, learning  # register additive tables
+from app.services.learning_catalog import seed_learning
 from app.models.trading import (
     CoachReview, EquitySnapshot, JournalEntry, PaperFill, PaperOrder,
     PaperPortfolio, PaperPosition, RiskProfile, RiskViolation, WatchlistItem,
@@ -69,6 +71,7 @@ async def init_db():
     session_factory = _get_session_factory()
     async with session_factory() as session:
         await seed_curriculum(session)
+        await seed_learning(session)
 
 
 async def seed_curriculum(session: AsyncSession):
@@ -203,5 +206,10 @@ If you use a 1:2 R:R (risking $100 to make $200):
 
 
 if __name__ == "__main__":
-    # Allow running the seed script standalone
-    asyncio.run(init_db())
+    async def initialize_and_close():
+        try:
+            await init_db()
+        finally:
+            await _get_engine().dispose()
+
+    asyncio.run(initialize_and_close())

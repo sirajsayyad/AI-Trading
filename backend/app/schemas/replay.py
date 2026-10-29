@@ -13,11 +13,12 @@ class ReplaySessionCreate(BaseModel):
     start_date: str = Field(..., description="ISO format date")
     speed_multiplier: float = Field(default=1.0, ge=0.1, le=100.0)
     blind_mode: bool = False
+    stored_only: bool = False
 
 
 class ReplayControl(BaseModel):
     """Control commands for a replay session."""
-    action: str = Field(..., pattern=r"^(pause|resume|jump|speed)$")
+    action: str = Field(..., pattern=r"^(pause|resume|jump|speed|step)$")
     value: Optional[str] = None  # For jump: date string; for speed: multiplier
 
 

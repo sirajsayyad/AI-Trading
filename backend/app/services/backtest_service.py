@@ -21,6 +21,7 @@ async def fetch_candles(
     timeframe: str,
     start_date: str,
     end_date: str,
+    stored_only: bool = False,
 ) -> list[CandleData]:
     """Fetch candles from DB and convert to CandleData objects."""
     start = datetime.fromisoformat(start_date)
@@ -52,7 +53,7 @@ async def fetch_candles(
         for row in rows
     ]
 
-    if candles:
+    if candles or stored_only:
         return candles
 
     provider_candles = await fetch_live_candles(
@@ -89,6 +90,7 @@ async def run_backtest_service(
     slippage_bps: float = 5.0,
     commission_flat: float = 1.0,
     commission_pct: float = 0.001,
+    stored_only: bool = False,
 ) -> tuple[str, dict]:
     """Run a backtest and persist results. Returns (run_id, results_dict)."""
 
@@ -110,7 +112,7 @@ async def run_backtest_service(
     await db.flush()
 
     try:
-        candles = await fetch_candles(db, symbol, timeframe, start_date, end_date)
+        candles = await fetch_candles(db, symbol, timeframe, start_date, end_date, stored_only)
 
         if not candles:
             run.status = "failed"

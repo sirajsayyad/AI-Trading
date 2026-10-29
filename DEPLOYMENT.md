@@ -10,7 +10,8 @@
 | `DATABASE_URL` | Full async connection string | `postgresql+asyncpg://user:pass@db:5432/ai_trading` |
 | `REDIS_URL` | Redis connection string | `redis://redis:6379/0` |
 | `SECRET_KEY` | JWT signing key (min 32 chars) | `<random-256-bit-hex>` |
-| `ANTHROPIC_API_KEY` | Claude API key for AI coach | `sk-ant-...` |
+| `OLLAMA_BASE_URL` | Backend-only local inference server | `http://127.0.0.1:11434` |
+| `OLLAMA_MODEL` | Installed open-weight model tag | `qwen3:4b-thinking` |
 | `CORS_ORIGINS` | Allowed frontend origins | `https://yourdomain.com` |
 | `NEXT_PUBLIC_API_URL` | Backend URL for frontend | `https://api.yourdomain.com` |
 
@@ -18,7 +19,7 @@
 
 - Docker & Docker Compose v2+
 - Domain with SSL certificate (for production)
-- Anthropic API key (optional — offline mode works without it)
+- Ollama running with the configured Qwen model; no paid model key is required. See `docs/AI_COACH.md`.
 
 ## Deployment Steps
 
@@ -72,7 +73,7 @@ open http://localhost:3000
 - [ ] Set strong `POSTGRES_PASSWORD` (not the default)
 - [ ] Set strong `SECRET_KEY` (min 32 random chars)
 - [ ] Set `CORS_ORIGINS` to your actual frontend domain
-- [ ] Set `ANTHROPIC_API_KEY` if using AI coach
+- [ ] Start Ollama, pull `OLLAMA_MODEL`, and configure the backend-only `OLLAMA_BASE_URL`
 - [ ] Run database migrations before first start
 - [ ] Set up SSL/TLS termination (nginx, Caddy, or cloud LB)
 - [ ] Enable database backups

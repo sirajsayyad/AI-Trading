@@ -8,7 +8,7 @@ from datetime import datetime
 import httpx
 from fastapi import APIRouter, Depends, File, HTTPException, Query, UploadFile, WebSocket, WebSocketDisconnect
 from fastapi.encoders import jsonable_encoder
-from sqlalchemy import distinct, func, select
+from sqlalchemy import func, select
 from sqlalchemy.ext.asyncio import AsyncSession
 
 from app.core.database import get_db
@@ -38,30 +38,26 @@ async def stream_quote(websocket: WebSocket, symbol: str):
 @router.get("/symbols", response_model=list[SymbolInfo])
 async def list_symbols(db: AsyncSession = Depends(get_db)):
     """List all available symbols with date ranges and candle counts."""
-    stmt = (
-        select(
-            Candle.symbol,
-            func.array_agg(distinct(Candle.timeframe)).label("timeframes"),
-            func.min(Candle.timestamp).label("first_date"),
-            func.max(Candle.timestamp).label("last_date"),
-            func.count().label("candle_count"),
-        )
-        .group_by(Candle.symbol)
-        .order_by(Candle.symbol)
-    )
-    result = await db.execute(stmt)
-    rows = result.all()
+    rows = (await db.execute(
+        select(Candle.symbol, Candle.timeframe,
+               func.min(Candle.timestamp).label("first_date"),
+               func.max(Candle.timestamp).label("last_date"),
+               func.count().label("candle_count"))
+        .group_by(Candle.symbol, Candle.timeframe).order_by(Candle.symbol, Candle.timeframe)
+    )).all()
+    grouped = {}
+    for row in rows:
+        if row.symbol not in grouped:
+            grouped[row.symbol] = {"symbol": row.symbol, "timeframes": [],
+                                   "first_date": row.first_date, "last_date": row.last_date,
+                                   "candle_count": 0}
+        item = grouped[row.symbol]
+        item["timeframes"].append(row.timeframe)
+        item["first_date"] = min(item["first_date"], row.first_date)
+        item["last_date"] = max(item["last_date"], row.last_date)
+        item["candle_count"] += row.candle_count
+    return [SymbolInfo(**item) for item in grouped.values()]
 
-    return [
-        SymbolInfo(
-            symbol=row.symbol,
-            timeframes=sorted(row.timeframes),
-            first_date=row.first_date,
-            last_date=row.last_date,
-            candle_count=row.candle_count,
-        )
-        for row in rows
-    ]
 
 
 @router.get("/{symbol}/candles", response_model=list[CandleResponse])

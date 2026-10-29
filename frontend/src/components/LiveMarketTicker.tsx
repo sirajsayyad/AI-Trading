@@ -24,7 +24,7 @@ export default function LiveMarketTicker({ symbol = "AAPL" }: { symbol?: string 
   const positive = (quote?.change ?? 0) >= 0;
   return (
     <div className="live-ticker" aria-live="polite">
-      <div><span className="live-ticker-label"><i /> LIVE SHARE VALUE · {symbol}</span><strong>{quote ? `$${quote.price.toFixed(2)}` : "Loading…"}</strong></div>
+      <div><span className="live-ticker-label"><i /> MARKET QUOTE · {symbol}</span><strong>{quote ? `$${quote.price.toFixed(2)}` : "Quote unavailable"}</strong></div>
       {quote && <span className={positive ? "up" : "down"}>{positive ? "+" : ""}{quote.change.toFixed(2)} ({positive ? "+" : ""}{quote.percent_change.toFixed(2)}%)</span>}
       <small>{quote?.is_market_open ? "Market open" : "Latest available quote"}</small>
     </div>

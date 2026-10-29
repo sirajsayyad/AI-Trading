@@ -74,13 +74,13 @@ export default function Navbar() {
       <div className="sidebar-spacer" />
       <Link href="/settings" className={`sidebar-link ${pathname.startsWith("/settings") ? "active" : ""}`} title={collapsed ? "Settings" : undefined}><Icon name="settings" /><span>Settings</span></Link>
       <button className="sidebar-collapse" onClick={toggleCollapsed} aria-label={collapsed ? "Expand sidebar" : "Collapse sidebar"}><Icon name="chevron" /><span>{collapsed ? "Expand" : "Collapse"}</span></button>
-      <div className="sidebar-status"><i /> <span>Market data connected</span></div>
+      <div className="sidebar-status"><i /> <span>Market workspace</span></div>
     </aside>
 
     <header className="app-topbar">
       <div className="topbar-heading"><span className="topbar-eyebrow">AI TRADING WORKSPACE</span><strong>{pageTitle}</strong></div>
       <div className="topbar-actions">
-        <span className="connection-pill"><i /> Live data</span>
+        <span className="connection-pill"><i /> Market workspace</span>
         <button className="icon-button" aria-label="Notifications"><span className="notification-dot" /><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.8" strokeLinecap="round"><path d="M18 8a6 6 0 0 0-12 0c0 7-3 7-3 9h18c0-2-3-2-3-9M10 21h4" /></svg></button>
         <div className="profile-wrap">
           <button className="profile-button" onClick={() => setProfileOpen((value) => !value)} aria-expanded={profileOpen}>

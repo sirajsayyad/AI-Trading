@@ -46,6 +46,7 @@ async def run_backtest_endpoint(
             slippage_bps=config.slippage_bps,
             commission_flat=config.commission_flat,
             commission_pct=config.commission_pct,
+            stored_only=config.stored_only,
         )
 
         if "error" in results:

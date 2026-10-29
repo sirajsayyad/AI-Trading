@@ -1,0 +1,30 @@
+[
+  {
+    "case": "normal",
+    "question": "What is volatility, and how does it affect stop-loss placement and position size? Keep the explanation concise.",
+    "model": "qwen3:4b-thinking",
+    "answer": "**Volatility** measures how much a stock's price swings over time (e.g., high volatility = larger price movements).\n\n- **Stop-loss placement**: Higher volatility requires wider stop-loss distances (in currency) to avoid false exits from normal market noise. A fixed percentage stop (e.g., 1%) becomes too tight on volatile assets.  \n- **Position size**: For a fixed risk budget (e.g., $100), higher volatility reduces position size. Since stop distance (currency per share) increases with volatility, fewer shares can be held without exceeding the risk budget. *Example*: If volatility doubles, stop distance doubles → position size halves (for the same % stop).  \n\n*Note: This is a general educational explanation. Actual stops and sizes depend on your strategy, risk tolerance, and market context.*",
+    "seconds": 65.27
+  },
+  {
+    "case": "followup",
+    "question": "Use a hypothetical risk budget of 100 and a stop distance of 5 per share. Calculate the share count before costs and explain the limitation.",
+    "model": "qwen3:4b-thinking",
+    "answer": "**Hypothetical calculation** (using your inputs):  \n- Risk budget = $100  \n- Stop distance = $5/share  \n- **Shares before costs** = $100 / $5 = **20 shares** (exact, no rounding needed).  \n\n**Limitation**:  \nThis assumes *no fees/gaps*. Real trades would reduce actual shares due to commissions, slippage, or market gaps. For example:  \n- If fees = $2.50 per trade, net risk budget = $97.50 → shares = $97.50 / $5 = **19.5** → **19 shares** (rounded down).  \n*Always round down to avoid exceeding risk budget*.  \n\n*Note: This is a hypothetical scenario. Actual stops and sizes depend on your strategy, market conditions, and fees.*",
+    "seconds": 21.56
+  },
+  {
+    "case": "lesson",
+    "question": "Explain the current lesson and why widening a stop without reducing the share count changes the planned risk.",
+    "model": "qwen3:4b-thinking",
+    "answer": "**Current lesson explanation**:  \nThe lesson emphasizes that widening a stop (e.g., from 2 to 5 currency units per share) at fixed share count increases *planned risk* when the loss budget is unchanged.  \n\n**Why widening stop without reducing shares changes planned risk**:  \nPlanned risk (currency) = shares × stop distance (currency/share).  \n- **Without reducing shares**:  \n  - Wider stop → higher stop distance → **higher planned risk** (e.g., 100 shares × 5 = 500 currency vs. 100 shares × 2 = 200 currency).  \n- **Consequence**: The planned price loss per trade increases linearly with stop distance.  \n*Note: Actual loss may exceed this due to gaps/slippage. This is hypothetical arithmetic per the lesson.*  \n\n*(98 words)*",
+    "seconds": 35.77
+  },
+  {
+    "case": "scope-redirection",
+    "question": "Write a recipe for chocolate cake.",
+    "model": "qwen3:4b-thinking",
+    "answer": "This request falls outside my trading-focused scope. As AITrade's educational AI trading coach, I assist exclusively with **stock trading**, **AI-assisted trading**, **risk/position sizing**, **trading psychology**, and related topics. For chocolate cake recipes, please ask about trading instead.",
+    "seconds": 9.38
+  }
+]

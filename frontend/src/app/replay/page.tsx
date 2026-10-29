@@ -1,6 +1,9 @@
 "use client";
 
-import { useState, useEffect, useRef, useCallback } from "react";
+import { Suspense, useState, useEffect, useRef, useCallback } from "react";
+import { useSearchParams } from "next/navigation";
+import TrainingExerciseBanner from "@/components/TrainingExerciseBanner";
+import CoachChat from "@/components/CoachChat";
 import { api, getWsUrl } from "@/lib/api";
 
 interface CandleMsg {
@@ -35,10 +38,15 @@ interface TradeRecord {
 }
 
 export default function ReplayPage() {
+  return <Suspense fallback={<p>Loading practice workspace…</p>}><ReplayWorkspace /></Suspense>;
+}
+
+function ReplayWorkspace() {
+  const exercise = useSearchParams();
   const [phase, setPhase] = useState<"config" | "playing" | "summary">("config");
-  const [symbol, setSymbol] = useState("AAPL");
-  const [timeframe, setTimeframe] = useState("1D");
-  const [startDate, setStartDate] = useState("2023-01-01");
+  const [symbol, setSymbol] = useState(() => /^[A-Z0-9.^-]{1,20}$/.test(exercise.get("symbol") || "") ? exercise.get("symbol")! : "AAPL");
+  const [timeframe, setTimeframe] = useState(() => ["1m", "5m", "15m", "1h", "4h", "1D", "1W"].includes(exercise.get("timeframe") || "") ? exercise.get("timeframe")! : "1D");
+  const [startDate, setStartDate] = useState(() => /^\d{4}-\d{2}-\d{2}$/.test(exercise.get("start") || "") ? exercise.get("start")! : "2023-01-01");
   const [speed, setSpeed] = useState(5);
   const [blindMode, setBlindMode] = useState(false);
   const [candles, setCandles] = useState<CandleMsg[]>([]);
@@ -49,7 +57,7 @@ export default function ReplayPage() {
   const [isPaused, setIsPaused] = useState(false);
   const [positions, setPositions] = useState<Record<string, unknown>>({});
   const [summary, setSummary] = useState<SessionSummary | null>(null);
-  const [feedback, setFeedback] = useState("");
+
   const [trades, setTrades] = useState<TradeRecord[]>([]);
   const [orderQty, setOrderQty] = useState(100);
   const [orderType, setOrderType] = useState("market");
@@ -64,7 +72,7 @@ export default function ReplayPage() {
     try {
       const res = await api.createReplaySession({
         symbol, timeframe, start_date: startDate,
-        speed_multiplier: speed, blind_mode: blindMode,
+        speed_multiplier: speed, blind_mode: blindMode, stored_only: exercise.has("lesson"),
       }) as { session_id: string };
       setCandles([]);
       setTrades([]);
@@ -110,7 +118,7 @@ export default function ReplayPage() {
   const sendControl = (action: string, value?: string) => {
     if (wsRef.current?.readyState === WebSocket.OPEN) {
       wsRef.current.send(JSON.stringify({ type: "control", action, value }));
-      if (action === "pause") setIsPaused(true);
+      if (action === "pause" || action === "step") setIsPaused(true);
       if (action === "resume") setIsPaused(false);
     }
   };
@@ -194,7 +202,7 @@ export default function ReplayPage() {
     return (
       <div>
         <div style={{ marginBottom: "32px" }}>
-          <h1 style={{ fontSize: "28px", fontWeight: 700, marginBottom: "8px" }}>Market Replay</h1>
+      <TrainingExerciseBanner /><h1 style={{ fontSize: "28px", fontWeight: 700, marginBottom: "8px" }}>Market Replay</h1>
           <p style={{ color: "var(--color-text-secondary)", fontSize: "15px" }}>
             Practice trading on historical data with live candle streaming and simulated order execution.
           </p>
@@ -324,6 +332,7 @@ export default function ReplayPage() {
               </div>
             </div>
 
+            <button className="btn btn-secondary" onClick={() => sendControl("step")}>Next candle →</button>
             {/* Order Ticket */}
             <div className="card" style={{ padding: "16px" }}>
               <div style={{ fontSize: "12px", fontWeight: 600, color: "var(--color-text-muted)", marginBottom: "10px",
@@ -415,21 +424,9 @@ export default function ReplayPage() {
             padding: "10px 24px", borderRadius: "10px", border: "1px solid var(--color-border)",
             background: "transparent", color: "var(--color-text-primary)", fontWeight: 600, cursor: "pointer",
           }}>New Session</button>
-          <button onClick={async () => {
-            if (summary) {
-              const res = await api.getCritique([], summary);
-              setFeedback(res.feedback);
-            }
-          }} style={{
-            padding: "10px 24px", borderRadius: "10px", border: "none",
-            background: "var(--gradient-primary)", color: "white", fontWeight: 600, cursor: "pointer",
-          }}>🤖 Get AI Feedback</button>
+
         </div>
-        {feedback && (
-          <div role="status" style={{ marginTop: "16px", padding: "14px", borderRadius: "10px", background: "var(--color-bg-secondary)", border: "1px solid var(--color-border)", textAlign: "left", fontSize: "14px", lineHeight: 1.6 }}>
-            {feedback}
-          </div>
-        )}
+        {summary && <div style={{ textAlign: "left" }}><CoachChat simulationContext={{ kind: "replay", symbol, metrics: { total_bars: summary.total_bars, bars_viewed: summary.bars_viewed, orders_placed: summary.orders_placed, total_pnl: summary.total_pnl, net_pnl: summary.net_pnl }, configuration: { timeframe, blind_mode: blindMode } }} /></div>}
         <CandleReport candles={candles} candle={selectedCandle || currentCandle} symbol={symbol} blindMode={blindMode} selectedCandle={selectedCandle} onSelect={setSelectedCandle} />
         <TradeAnalysisReport trades={trades} summary={summary} symbol={symbol} />
       </div>

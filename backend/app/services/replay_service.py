@@ -32,6 +32,7 @@ async def create_session(
     start_date: str,
     speed_multiplier: float = 1.0,
     blind_mode: bool = False,
+    stored_only: bool = False,
 ) -> dict:
     """Create a new replay session and load candle data."""
 
@@ -47,6 +48,8 @@ async def create_session(
     result = await db.execute(stmt)
     candles = result.scalars().all()
 
+    if not candles and stored_only:
+        return {"error": "No stored historical candles in this range. Upload a permitted dataset first."}
     if not candles:
         try:
             provider_candles = await fetch_live_candles(
@@ -138,8 +141,9 @@ async def get_next_candle(session_id: str) -> dict | None:
     if not state:
         return None
 
-    if state["paused"]:
+    if state["paused"] and not state.get("step_once"):
         return {"paused": True}
+    state["step_once"] = False
 
     candles = state["candles"]
     idx = state["index"]
@@ -247,6 +251,12 @@ def control_session(session_id: str, action: str, value: str = None) -> dict:
 
     if action == "pause":
         state["paused"] = True
+        state["status"] = "paused"
+        return {"status": "paused"}
+
+    elif action == "step":
+        state["paused"] = True
+        state["step_once"] = True
         state["status"] = "paused"
         return {"status": "paused"}
 
